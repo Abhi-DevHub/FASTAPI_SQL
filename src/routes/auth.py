@@ -1,15 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-import logging
+from fastapi.security import OAuth2PasswordRequestForm
 
 from src.schemas.user import UserResponse, UserCreate
 from src.models.user import User
-from src.utils.auth import get_password_hash
+from src.utils.auth import get_password_hash, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from src.database import get_db
 
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-logger = logging.getLogger("bookmark_short_sql-api")
+import logging
+from datetime import timedelta, datetime, timezone
+
+# Configure logging
+logger = logging.getLogger("bookmark_short_sql-api")    
 router = APIRouter(
     prefix="/auth",
     tags=["authentication"],
@@ -54,7 +58,7 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     db_user= User(
         email=user.email,
         username=user.username,
-        password=hashed_password
+        hash_password=hashed_password
     )
 
     db.add(db_user)
@@ -63,3 +67,35 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     logger.info(f"User created successfully: {db_user.username}")
     return db_user
 
+"""Todo:
+ 1. Check if the user exists in the database.
+ 2. Generate an access token for the user.
+ 3. Send the access token back.
+"""
+
+
+
+@router.post("/login", response_model=UserResponse)
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db)
+):
+    logger.info(f"Login attempt for username: {form_data.username}")
+
+    user = await authenticate_user(db, form_data.username, form_data.password)
+
+    if not user:
+        logger.warning(f"login failed attempt for username: {form_data.username}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    logger.info(f"User authenticated successfully: {user.username}")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=access_token_expires
+    )
+    
+    
