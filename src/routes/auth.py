@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from src.schemas.user import UserResponse, UserCreate
 from src.models.user import User
-from src.utils.auth import get_password_hash, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from src.utils.auth import create_access_token, get_password_hash, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from src.database import get_db
 
 from sqlalchemy.future import select
@@ -91,11 +91,11 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    logger.info(f"User authenticated successfully: {user.username}")
+    logger.info(f"User authenticated successfully: {form_data.username}")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username},
+        data={"sub": user.username}, # type: ignore
         expires_delta=access_token_expires
     )
-    
+
     
