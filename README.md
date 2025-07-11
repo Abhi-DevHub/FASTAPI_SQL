@@ -8,6 +8,7 @@ A modern, secure, and extensible URL shortener service built with FastAPI, SQLAl
 - **Solution:** This project provides a robust API for user registration, authentication, bookmark (URL) creation, redirection, and analytics, with a focus on clean code, security, and extensibility.
 
 ## Features
+
 - User registration and JWT-based authentication
 - Create short URLs (bookmarks) for any valid URL
 - Redirect to the original URL using the short code
@@ -18,13 +19,16 @@ A modern, secure, and extensible URL shortener service built with FastAPI, SQLAl
 - CORS support and enhanced logging
 
 ## Tech Stack
+
 - **Backend:** FastAPI, SQLAlchemy (async), Alembic
 - **Database:** PostgreSQL
 - **Auth:** JWT (JSON Web Tokens)
 - **Other:** Pydantic, passlib (bcrypt), requests (for testing)
 
 ## Project Structure
+
 ```
+
 src/
   routes/
     auth.py         # Auth endpoints (register, login)
@@ -78,6 +82,7 @@ requirements.txt     # Python dependencies
 ## How to Run
 
 1. **Clone the repo and install dependencies:**
+
    ```sh
    git clone <repo-url>
    cd FASTAPI_SQL
@@ -85,24 +90,29 @@ requirements.txt     # Python dependencies
    venv\Scripts\activate  # On Windows
    pip install -r requirements.txt
    ```
+
 2. **Configure your database in `src/config.py`**
 3. **Run Alembic migrations:**
+
    ```sh
    alembic upgrade head
    ```
+
 4. **Start the server:**
+
    ```sh
    uvicorn src.main:app --reload
    ```
+
 5. **Visit the docs:**
    - Open [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## Example Workflow (with Python requests)
+
 See `test_login.py` for a full example of registration, login, bookmark creation, and retrieval.
 
 ## RTC (Ready To Contribute)
+
 - The project is modular and ready for contributions.
 - You can add features like custom domains, analytics, admin panel, etc.
 - Please open issues or pull requests for suggestions and improvements.
-
-
