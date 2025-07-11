@@ -2,7 +2,6 @@ from typing import Dict, Optional
 from datetime import timedelta, datetime, timezone
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy import select
 
 from passlib.context import CryptContext
 
@@ -55,8 +54,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
     )
-
-
     try:
         payload = jwt.decode(token,config.SECRET_KEY, algorithms=[ALGORITHM]) # type: ignore
         username: str = payload.get("sub") # type: ignore
@@ -66,3 +63,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
     except JWTError:
         raise credentail_exceptions
     result = await db.execute(select(User).filter(User.username == token_data.username))
+
+    user = result.scalars().first()
+    if user is None:
+        raise credentail_exceptions
+    return user
+
+async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
+    if not current_user.is_active: # type: ignore
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
+    return current_user

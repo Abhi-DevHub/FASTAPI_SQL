@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, Field
 from datetime import datetime
 
 
@@ -13,9 +13,10 @@ class BookmarkCreate(BookmarkBase):
 class BookmarkResponse(BookmarkBase):
     id: str
     short_code: str
-    visit_count: int
+    visit_count: int = Field(..., alias="visits")
     created_at: datetime
     user_id: str
 
     class Config:
         from_attributes = True
+        allow_population_by_field_name = True

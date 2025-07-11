@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from src.schemas.user import UserResponse, UserCreate
+from src.schemas.user import UserResponse, UserCreate, Token
 from src.models.user import User
 from src.utils.auth import create_access_token, get_password_hash, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from src.database import get_db
@@ -74,32 +74,29 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 """
 
 
-
-
-async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)) -> User:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials"
+@router.post("/login", response_model=Token)
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db)
+):
+    logger.info(f"Login attempt for username: {form_data.username}")
+    
+    user = await authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        logger.warning(f"Failed login attempt for username: {form_data.username}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password"
+        )
+    
+    logger.info(f"User authenticated successfully: {form_data.username}")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires # type: ignore
     )
-    try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
-
-    result = await db.execute(select(User).filter(User.username == token_data.username))
-    user = result.scalars().first()
-    if user is None:
-        raise credentials_exception
-    return user
-
-
-async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
-    """You can have some custom logic about the User.
-    Here I am chcking the User is active or not."""
-    if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
+    
+    logger.debug(f"Access token generated for user: {form_data.username}")
+    return Token(
+        access_token=access_token,
+        token_type="Bearer"
+    )

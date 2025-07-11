@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.routes import auth
+from src.routes import auth, bookmarks
 
 
 app = FastAPI(
@@ -9,6 +9,7 @@ app = FastAPI(
 )
 
 app.include_router(auth.router)
+app.include_router(bookmarks.router)
 
 
 @app.get("/", tags=["health"])
