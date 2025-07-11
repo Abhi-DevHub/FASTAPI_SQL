@@ -105,5 +105,4 @@ See `test_login.py` for a full example of registration, login, bookmark creation
 - You can add features like custom domains, analytics, admin panel, etc.
 - Please open issues or pull requests for suggestions and improvements.
 
-## License
-MIT
+
