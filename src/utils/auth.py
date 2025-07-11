@@ -1,6 +1,8 @@
 from typing import Dict, Optional
 from datetime import timedelta, datetime, timezone
 from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy import select
 
 from passlib.context import CryptContext
 
@@ -9,7 +11,7 @@ from jose import JWTError, jwt
 from src.models.user import User
 from src import config
 from src.database import get_db
-from src.schemas.token import TokenData
+from src.schemas.user import TokenData
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -21,6 +23,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 1440 # 24 hours = 1440 minutes
 pwd_context = CryptContext(
     schemes=["bcrypt"], 
     deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
