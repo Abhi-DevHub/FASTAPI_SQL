@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
-from sqlalchemy.orm import declarative_base
 from src.utils.utils import generate_uuid
 from sqlalchemy.sql import func
 

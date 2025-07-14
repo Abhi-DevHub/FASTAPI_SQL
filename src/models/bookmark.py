@@ -1,6 +1,5 @@
 import uuid
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Index
-from sqlalchemy.orm  import declarative_base
 from sqlalchemy.sql import func
 from src.models.base import Base
 from src.utils.utils import generate_uuid
