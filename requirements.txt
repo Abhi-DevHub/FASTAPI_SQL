@@ -9,3 +9,5 @@ email-validator
 asyncpg
 bcrypt
 python-multipart
+requests
+pytest
