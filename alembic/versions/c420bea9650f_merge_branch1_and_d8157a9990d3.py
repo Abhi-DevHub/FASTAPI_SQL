@@ -73,3 +73,4 @@ def downgrade() -> None:
     op.drop_index('ix_users_last_name', table_name='users')
     op.drop_column('users', 'first_name')
     op.drop_column('users', 'last_name')
+    
