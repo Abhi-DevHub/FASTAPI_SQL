@@ -3,6 +3,17 @@
 
 A modern, secure, and extensible URL shortener service built with FastAPI, SQLAlchemy (async), Alembic, and PostgreSQL.
 
+
+## API Flow & Output
+
+### API Workflow Diagram
+
+![API Workflow](API_FLOW.png)
+
+### Example Output (Swagger UI)
+
+![Swagger UI Output](https://user-images.githubusercontent.com/your-screenshot-path/swagger-ui-example.png)
+
 ## Data Migration Focus (Alembic, SQLAlchemy, PostgreSQL)
 
 This project demonstrates robust data migration workflows using Alembic for schema and data changes, SQLAlchemy for ORM mapping, and PostgreSQL as the database backend. The migration process is automated and version-controlled, making it easy to evolve your database schema safely.
@@ -12,15 +23,20 @@ This project demonstrates robust data migration workflows using Alembic for sche
 
 Below is a visual representation of the Alembic migration history for this project:
 
+
 ```text
--- a9a344a9be94_first_commit -->
-                           /                   \
-<base> --> b4d5b9d35e8d_add_default_to_created_at_and_updated_at -->
-                           \                   /
-                            -- branch1_branch_from_b4d5b9d35e8d -->
-                            -- d8157a9990d3_update_db -->
-                                 \                   /
-                                  -- c420bea9650f_merge_branch1_and_d8157a9990d3 --> mergepoint
+<base>
+  |
+  |-- a9a344a9be94_first_commit
+  |
+  |-- b4d5b9d35e8d_add_default_to_created_at_and_updated_at
+      |\
+      | \
+      |  |-- branch1_branch_from_b4d5b9d35e8d
+      |  |-- d8157a9990d3_update_db
+      | /
+      |/
+  |-- c420bea9650f_merge_branch1_and_d8157a9990d3 (mergepoint)
 ```
 
 Each migration file represents a step in the evolution of the database schema. The mergepoint shows where branches were merged together.
