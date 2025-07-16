@@ -3,8 +3,8 @@ import requests
 # Step 1: Register a new user
 register_url = "http://localhost:8000/auth/register"
 register_data = {
-    "username": "ABHISHEK HIREMATH",
-    "email": "abhishekhiremath@gmail.com.com",
+    "username": "demo_user",
+    "email": "demo_user@gmail.com",
     "password": "123"
 }
 register_response = requests.post(register_url, json=register_data)
@@ -14,7 +14,7 @@ print("\nRegister Response:", register_response.json())
 # Step 2: Login to get the access token
 login_url = "http://localhost:8000/auth/login"
 login_data = {
-    "username": "ABHISHEK HIREMATH",
+    "username": "demo_user",
     "password": "123"
 }
 login_response = requests.post(login_url, data=login_data)
