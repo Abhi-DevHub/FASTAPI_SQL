@@ -12,7 +12,7 @@ A modern, secure, and extensible URL shortener service built with FastAPI, SQLAl
 
 ### Example Output (Swagger UI)
 
-![Swagger UI Output](https://user-images.githubusercontent.com/your-screenshot-path/swagger-ui-example.png)
+![Swagger UI Output](output.png)
 
 ## Data Migration Focus (Alembic, SQLAlchemy, PostgreSQL)
 
