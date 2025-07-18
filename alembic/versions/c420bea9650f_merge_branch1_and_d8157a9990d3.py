@@ -47,7 +47,7 @@ def upgrade() -> None:
     # Remove 'username' column
     op.drop_index('ix_users_username', table_name='users')
     op.drop_column('users', 'username')
-
+    
 
 def downgrade() -> None:
     """Downgrade schema."""
